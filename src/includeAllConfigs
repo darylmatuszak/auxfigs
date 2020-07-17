@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+if [ "$#" -ne 1 ]; then
+	echo "Only 1 arg, dirname"
+    exit 2
+fi
+
+dir="$1"
+
+if ! [ -d "$dir" ] || ! [ -r "$dir" ]; then
+	echo "Dir doesn't exist or can't read"
+	exit 3
+fi
+
+# quoting protects again whitespace in path, builds array
+confs=("$dir"/*.aux)
+
+errors=0
+for c in "${confs[@]}"; do
+	base="${c%.aux}"
+	if ! [ -r "$base".template ]; then
+		echo "${base##*/} is missing template"
+		errors=1
+		continue
+	else
+		template="$(cat "$base".template)"
+	fi
+	if ! [ -r "$base".main ]; then
+		echo "${base##*/}" "is missing main"
+		errors=1
+		continue
+	else
+		main="$(cat "$base".main)"
+	fi
+	aux="$c"
+
+	# escaping quotes make sure they still surround whatever the far expands to, mostly so ${HOME} can be used in the .main files
+	eval src/includeConfig \"$template\" \"$aux\" \"$main\"
+done
+
+if [ "$errors" -eq 1 ]; then
+	exit 1
+fi

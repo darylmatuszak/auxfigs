@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+aux_placeholder="$1"
+template="$2"
+aux_config="$3"
+main_config="$4"
+
+# all arguments are positoinal and required
+if [ "${#}" -ne 4 ]; then
+	echo "Missing argument(s)"
+	exit 7
+fi
+
+# template must have an occurence of the placeholder
+if ! echo "$template" | grep -F "$aux_placeholder" >/dev/null; then
+    echo "Invalid INCLUDE_STRING"
+    exit 3
+fi
+
+# aux must be a real/regular file
+if ! [ -f "$aux_config" ]; then
+    echo "AUX: $aux_config must be a regular file"
+    exit 4
+fi
+
+# main must exist and be writeable, or must be a path where we could write a new file
+if ! ([ -w "$main_config" ] || [ -w "${main_config%/*}" ]); then
+    echo "MAIN must be a writeable file or at least a writeable path to create a file"
+    exit 5
+fi

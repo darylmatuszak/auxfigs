@@ -1,0 +1,19 @@
+# appends the line "str" to file if not already present
+# creating file if it doesn't already exist
+# will not append if line is already present
+# does not validate inputs
+
+insert_str="$1"
+target_file="$2"
+
+if ! [ -e "$target_file" ]; then
+  echo "$target_file does not exist"
+  touch "$target_file" && echo "...created..."
+fi;
+
+# make sure to search as fixed string
+if grep -F "$insert_str" "$target_file" >/dev/null; then
+    echo "$target_file already contains \"$insert_str\""
+else
+    echo "$insert_str" >> "$target_file" && echo "...appended..."
+fi;
