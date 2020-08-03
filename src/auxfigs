@@ -35,7 +35,7 @@ for c in "${confs[@]}"; do
 	aux="$c"
 
 	# escaping quotes make sure they still surround whatever the far expands to, mostly so ${HOME} can be used in the .main files
-	eval src/includeConfig \"$template\" \"$aux\" \"$main\"
+    eval src/processConfig \"$template\" \"$aux\" \"$main\"
 done
 
 if [ "$errors" -eq 1 ]; then
