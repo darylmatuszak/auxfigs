@@ -2,29 +2,29 @@ load test_helper
 
 
 function main() {
-	src/includeAllConfigs "${@}"
+	src/auxfigs "${@}"
 }
 
 
-@test "includeAllConfigs w/o args" {
+@test "functional w/o args" {
 	run main
 	[ "${status}" -eq 2 ]
 }
 
 
-@test "includeAllConfigs w/ non existent dir" {
+@test "functional w/ non existent dir" {
 	run main "$EMPTY_STRING"
 	[ "${status}" -eq 3 ]
 }
 
 
-@test "includeAllConfigs w/ unreadable dir" {
+@test "functional w/ unreadable dir" {
 	run main "$UNREADABLE_DIR"
 	[ "${status}" -eq 3 ]
 }
 
 
-@test "includeAllConfigs w/ valid aux_confs" {
+@test "functional w/ valid aux_confs" {
 	ac="$(get_valid_aux_confs)"
 	run main "$ac"
 	[ "${status}" -eq 0 ]
@@ -34,7 +34,7 @@ function main() {
 	[ "$(tail -1 "$ac/main.two")" = "${VALID_TEMPLATE%$VALID_PLACEHOLDER}$ac/two.aux" ]
 }
 
-@test "includeAllConfigs w/ semi-valid aux_confs" {
+@test "functional w/ semi-valid aux_confs" {
 	ac="$(get_incomplete_aux_confs)"
 	run main "$ac"
 	[ "${status}" -eq 1 ]

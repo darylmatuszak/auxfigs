@@ -6,5 +6,4 @@ test:
 	bats tests/
 
 install:
-	src/includeAllConfigs "${PWD}/aux_configs"
-	
+	src/auxfigs "${PWD}/aux_configs"
