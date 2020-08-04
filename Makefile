@@ -7,3 +7,6 @@ test:
 
 install:
 	src/auxfigs "${PWD}/aux_configs"
+
+remove:
+	src/auxfigs "${PWD}/aux_configs" remove

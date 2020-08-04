@@ -7,7 +7,7 @@ function validateArgs() {
     main_config="$4"
 
     # all arguments are positoinal and required
-    if [ "${#}" -ne 4 ]; then
+    if [ "${#}" -ne 5 ]; then
         echo "Missing argument(s)"
         exit 7
     fi
@@ -29,4 +29,5 @@ function validateArgs() {
         echo "$main_config must be a writeable file or at least a writeable path to create a file"
         exit 5
     fi
+
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-if [ "$#" -ne 1 ]; then
-	echo "Only 1 arg, dirname"
+if [ "$#" -gt 2 ] || [ "$#" -lt 1 ]; then
+	echo "Only 2 arg, dirname, remove"
     exit 2
 fi
 
@@ -10,6 +10,12 @@ dir="$1"
 if ! [ -d "$dir" ] || ! [ -r "$dir" ]; then
 	echo "Dir doesn't exist or can't read"
 	exit 3
+fi
+
+if [ "$2" == "remove" ]; then
+    remove=True
+else
+    remove=False
 fi
 
 # quoting protects again whitespace in path, builds array
@@ -37,7 +43,7 @@ for c in "${confs[@]}"; do
 	aux="$c"
 
     # if main contains ${HOME} or ~/ need to evaluate that
-    processConfig "$template" "$aux" "$(eval echo $main)"
+    processConfig "$template" "$aux" "$(eval echo $main)" $remove
 done
 
 if [ "$errors" -eq 1 ]; then

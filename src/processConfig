@@ -5,16 +5,21 @@ function processConfig() {
     source src/validateArgs
     source src/getIncludeString
     source src/appendLineToFile
+    source src/removeLineFromFile
 
     aux_placeholder="aauuxx__ccoonnff"
     template="$1"
     aux="$2"
     main_config="$3"
+    remove="$4"
 
-    echo "${@}"
     validateArgs "$aux_placeholder" "${@}"
 
     insert_string="$(getIncludeString "$template" "$aux" "$aux_placeholder")"
 
-    appendLineToFile "$insert_string" $main_config
+    if [ "$remove" == True ]; then
+        removeLineFromFile "$insert_string" $main_config
+    else
+        appendLineToFile "$insert_string" $main_config
+    fi
 }
