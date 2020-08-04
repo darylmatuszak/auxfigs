@@ -15,6 +15,8 @@ fi
 # quoting protects again whitespace in path, builds array
 confs=("$dir"/*.aux)
 
+source src/processConfig
+
 errors=0
 for c in "${confs[@]}"; do
 	base="${c%.aux}"
@@ -34,8 +36,8 @@ for c in "${confs[@]}"; do
 	fi
 	aux="$c"
 
-	# escaping quotes make sure they still surround whatever the far expands to, mostly so ${HOME} can be used in the .main files
-    eval src/processConfig \"$template\" \"$aux\" \"$main\"
+    # if main contains ${HOME} or ~/ need to evaluate that
+    processConfig "$template" "$aux" "$(eval echo $main)"
 done
 
 if [ "$errors" -eq 1 ]; then

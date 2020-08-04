@@ -2,34 +2,36 @@
 # if file doesn't exist or str not present on a line does nothing
 # errors if file can not be read
 
-set -e
 
-remove_string="$1"
-target_file="$2"
+function removeLineFromFile() {
+  set -e
+  remove_string="$1"
+  target_file="$2"
 
-if ! [ -f "$target_file" ]; then
-  echo "$target_file does not exist"
-  exit 0
-fi
-
-
-if ! grep -F "$remove_string" "$target_file" >/dev/null; then
-    echo "$target_file does not contain $remove_string"
+  if ! [ -f "$target_file" ]; then
+    echo "$target_file does not exist"
     exit 0
-fi
+  fi
 
 
-# get the line numbers of matching lines
-line_nums=$(grep -Fn "$remove_string" "$target_file" | cut -d ':' -f 1)
+  if ! grep -F "$remove_string" "$target_file" >/dev/null; then
+      echo "$target_file does not contain $remove_string"
+      exit 0
+  fi
 
-# to delete a line number n, sed command is "nd"
-# multiple commands are seperated by semicolons
-# so this loop esentially puts in
-# "n1d;n2d;n3d;n4d;" for the sed commands, to delete all line numbers
-# where grep found a match
-sed_commands=$(for a in $line_nums; do echo -n $a"d;"; done)
 
-sed -i.bak "$sed_commands" "$target_file"
+  # get the line numbers of matching lines
+  line_nums=$(grep -Fn "$remove_string" "$target_file" | cut -d ':' -f 1)
 
-echo "Removed $remove_string from $target_file"
-echo "Original backed up $target_file.bak"
+  # to delete a line number n, sed command is "nd"
+  # multiple commands are seperated by semicolons
+  # so this loop esentially puts in
+  # "n1d;n2d;n3d;n4d;" for the sed commands, to delete all line numbers
+  # where grep found a match
+  sed_commands=$(for a in $line_nums; do echo -n $a"d;"; done)
+
+  sed -i.bak "$sed_commands" "$target_file"
+
+  echo "Removed $remove_string from $target_file"
+  echo "Original backed up $target_file.bak"
+}

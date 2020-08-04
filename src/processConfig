@@ -1,35 +1,20 @@
 #!/usr/bin/env bash
 
 # setup args
-aux_placeholder="aauuxx__ccoonnff"
-template="$1"
-aux="$2"
-main_config="$3"
+function processConfig() {
+    source src/validateArgs
+    source src/getIncludeString
+    source src/appendLineToFile
 
-function usage() {
-    echo "Ensures that main_config loads/sources/includes an auxillary_config by searching for required string and appending if not present
+    aux_placeholder="aauuxx__ccoonnff"
+    template="$1"
+    aux="$2"
+    main_config="$3"
 
-    USAGE:
-    includeConfig INCLUDE_TEMPLATE AUX MAIN
+    echo "${@}"
+    validateArgs "$aux_placeholder" "${@}"
 
-    INCLUDE_TEMPLATE - The line required to make MAIN load/source/include, but with AUX replaced by '$aux_placeholder'.
-        Example:
-            If sourcing /usr/local/extra.conf requires the string '[include] /usr/local/extra.conf', INCLUDE_STRING should be '[include] $aux_placeholder'.
-            AUX will be substituted in when determining if the string is present, or insert it if it is not.
+    insert_string="$(getIncludeString "$template" "$aux" "$aux_placeholder")"
 
-    AUX - path to the config file MAIN should load/source/include
-
-    MAIN - path to the config file to search"
+    appendLineToFile "$insert_string" $main_config
 }
-
-src/validateArgs "$aux_placeholder" "${@}"
-if [ "$?" -ne 0 ]; then
-	exit 1
-fi
-
-insert_string="$(src/getIncludeString "$template" "$aux" "$aux_placeholder")"
-if [ "$?" -ne 0 ]; then
-	exit 1
-fi
-
-src/appendLineToFile "$insert_string" $main_config

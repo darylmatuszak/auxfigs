@@ -2,7 +2,8 @@ load test_helper
 
 
 function main() {
-	src/appendLineToFile "${@}"
+	source src/appendLineToFile 
+  appendLineToFile "${@}"
 }
 
 

@@ -1,7 +1,8 @@
 load test_helper
 
 function main() {
-	src/removeLineFromFile "${@}"
+	source src/removeLineFromFile
+	removeLineFromFile "${@}"
 }
 
 @test "removeLineFromFile w/ non-existent file" {

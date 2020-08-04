@@ -2,8 +2,10 @@
 
 # expects all inputs to be valid, no checking
 
-incl_temp="$1"
-aux_config="$2"
-plc_holder="$3"
+function getIncludeString() {
+    incl_temp="$1"
+    aux_config="$2"
+    plc_holder="$3"
 
-echo ${incl_temp/$plc_holder/$aux_config}
+    echo ${incl_temp/$plc_holder/$aux_config}
+}

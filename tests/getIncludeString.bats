@@ -1,7 +1,8 @@
 load test_helper
 
 function main() {
-	src/getIncludeString "${@}"
+	source src/getIncludeString
+	getIncludeString "${@}"
 }
 
 @test "getIncludeString" {
