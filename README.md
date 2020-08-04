@@ -17,7 +17,7 @@ auxfigs was designed with the likes of vim, tmux, bash, git, in mind, but any ap
 
 ### SOURCE CONTROL OR SYNC METHOD FOR CONFIGURATIONS
 
-Since auxfigs loosely couples a tool's main configuration to an auxiliary configuration, further action is not required when the auxiliary config changes.
+Since auxfigs loosely couples a tool's main configuration to an auxiliary configuration, further action is not required when the auxiliary config (.aux file) changes.
 
 Changes to the auxiliary configs still need to be propagated across hosts however. How this is accomplished is intentionally left open. It could be copying files by thumb drive, rsync, Dropbox , or something else.
 
@@ -33,11 +33,16 @@ auxfigs should work wherever symlinks are supported and bash can access the file
 1. create a symlink pointing `aux_configs` to a directory of your choosing (this only needs to be done once)
 1. Add/edit files in the aux_configs directory (or link target) as needed. See FILE-STRUCTURE for details
 1. `make install` will perform the linking (this also only needs to be done once per new config)
+1. `make remove` will remove any previously peformed linking. ALWAYS UNLINK before changing .template or .main files (see NOTE ABOUT UNLINKING)
 
 ### WHAT IT DOES
 When installing operation goes as follows (repeated for each set of files)
 1. auxfigs creates the main file (if it does not already exist)
 2. auxfigs modifies the main file to source/include the auxiliary file (only if it does not already do so)
+
+Whe removing operation goes as follows
+1. auxfigs checks if the main file exists (if it does not it moves on to next fileset silently)
+1. auxfigs checks to see if the string it would insert to link the config is present. if so it backs up the file in place, and then removes the string.
 
 ----
 
@@ -98,6 +103,11 @@ To include another config file in a `.vimrc` file the syntax is `source <CONFIG_
 ----
 
 ## TIPS
-* Currently there is no removal, but operation is idempotent, so re-running without changes to `aux_configs` directory will inform you precisely what is sourced from where, which you can then use to manually the edit the appropriate files to remove any linkings as you see fit.
-* For any configurations which you don't want to link to on the machine you are using, you can remove the extension from the `.aux` file and it will be ignored when installing. You do not have to move or edit the associated `.main` or `.template` files. If you later want to later link that config, re-attaching the removed `.aux` extension would include it for installation.
+* Once linked, changes to .aux files (manually or via some syn mechanism) do not require any action from the user to go into effect
+* If making changes to .template or .main files you should first unlink them, then make the changes, and then relink them. Failure to do so could require some manual clean up.
+* Operation is idempotent, so re-running without changes to the `aux_configs` directory will have no effect.
+* For any configurations which you don't want to link to on the machine you are using, you can remove the extension from the `.aux` file and it will be ignored when installing. You do not have to move or edit the associated `.main` or `.template` files. If you later want to later link that config, re-attaching the removed `.aux` extension would include it for installation. (This appplies similarly if you want to run remove, but leave some configs linked)
 * Having an auxfig for a tool that isn't installed usually isn't a problem (it would merely be creating a file that isn't used). If the tool doesn't overwrite the main config on installation, your settings may already be in place. If not, you can always rerun auxfigs.
+
+## NOTE ABOUT UNLINKING
+auxfigs does not mantain any history state, so unlinking only operates on the current state of the `aux_configs` directory. Consider it the opposite of linking. Instead of inserting the generated template string, it removes it. If the template or the target of main has changed since linking was run, it is not the opposite. If you accidentally change a .template or main and link wihtout unlinking first, you can immediatly unlink (to undo the newest change) and then restore your template and/or main files to their previous state and unlink. Then make the change again, and relink.
