@@ -28,11 +28,19 @@ auxfigs should work wherever symlinks are supported and bash can access the file
 
 
 ## USAGE:
+### First Time Setup
 1. clone repo on machine where you want to run
 1. `cd` into repo
 1. create a symlink pointing `aux_configs` to a directory of your choosing (this only needs to be done once)
 1. Add/edit files in the aux_configs directory (or link target) as needed. See FILE-STRUCTURE for details
+
+Before linking or unlinking it is recommended to ensure all tests pass (see TESTING)
+
+### Linking
 1. `make install` will perform the linking (this also only needs to be done once per new config)
+
+### Unlinking
+Before unlinking, see NOTE ABOUT UNLINKING
 1. `make remove` will remove any previously peformed linking. ALWAYS UNLINK before changing .template or .main files (see NOTE ABOUT UNLINKING)
 
 ### WHAT IT DOES
@@ -49,7 +57,7 @@ Whe removing operation goes as follows
 ## TESTING:
 1. Clone repo to localhost
 1. `cd` into repo
-1. Ensure `bats` is accessible in your path https://github.com/bats-core/bats-core
+1. Install [bats](https://github.com/bats-core/bats-core) to be accessible from your path OR if you have git you can run `git submodule init && git submodule update` to make it acessible for just auxfigs
 1. `make` to run tests
 
 ----
