@@ -3,7 +3,7 @@
 default: test
 
 test:
-	bats tests/
+	src/run_tests
 
 install:
 	src/auxfigs "${PWD}/aux_configs"

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+submodule_bin="bats-core/bin/bats"
+test_dir="./tests/"
+
+if [ -x "$(command -v bats)" ]; then
+    bats "$test_dir"
+fi
+
+if ! [ -x "$submodule_bin" ]; then
+    echo "bats is not in your path and you dont have the submodule initialized"
+else
+    eval "$submodule_bin" "$test_dir"
+fi
+
