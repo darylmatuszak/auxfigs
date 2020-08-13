@@ -46,6 +46,7 @@ run main "$(get_valid_placeholder)" "$(get_valid_template)" "$(get_readable_file
   run main "$(get_valid_placeholder)" "$(get_valid_template)" "$(get_readable_file)" "$(get_blank_writeable_file)" False
   [ "${status}" -eq 0 ]
 }
+
 #
 #@test "validateArgs w/ rel path" {
 #  run main "$(get_valid_placeholder)" "$(get_valid_template)" "$(get_readable_file)" "$(get_writeable_non_existent_path)"
