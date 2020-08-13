@@ -5,6 +5,7 @@ test_dir="./tests/"
 
 if [ -x "$(command -v bats)" ]; then
     bats "$test_dir"
+    exit 0
 fi
 
 if ! [ -x "$submodule_bin" ]; then
