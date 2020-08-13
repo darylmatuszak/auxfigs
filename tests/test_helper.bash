@@ -12,12 +12,29 @@ if ! [ -w "$FIXTURES" ]; then
     fail "unable to make a writeable dir ${BATS_TMPDIR}/fixtures"
 fi
 
-export VALID_PLACEHOLDER="aauuxx__ccoonnff"
-export VALID_TEMPLATE="[include] path = $VALID_PLACEHOLDER"
-export INVALID_TEMPLATE="source ~/config.conf aux_config"
-export REGEX_UNFRIENDLY_INSERT_STRING="look[] at this. wacky? string{yeah}"
-export READABLE_FILE="$0"
-export EMPTY_STRING=""
+get_valid_placeholder() {
+    echo "aauuxx__ccoonnff"
+}
+
+get_valid_template() {
+    echo "[include] path = $(get_valid_placeholder)"
+}
+
+get_invalid_template() {
+    echo "source ~/config.conf aux_config"
+}
+
+get_regex_unfriendly_insert_string() {
+    echo 'look[] at this. wacky? string{yeah}'
+}
+
+get_readable_file() {
+    echo "$0"
+}
+
+get_empty_string() {
+    echo ""
+}
 
 get_writeable_non_existent_path() {
     file="$FIXTURES/${RANDOM}$(date +%s)${RANDOM}"
@@ -29,10 +46,11 @@ get_writeable_non_existent_path() {
 
 dir="$(get_writeable_non_existent_path)"
 mkdir "$dir"
+touch "$dir/file"
 chmod 000 "$dir"
 if ! [ -r "$dir" ] && [ -d "$dir" ]; then
     export UNREADABLE_DIR="$dir"
-    export UNREADABLE_FILE="$dir"/file
+    export UNREADABLE_FILE="$dir/file"
 else
     fail "can't use $dir as an unreadable dir"
 fi
@@ -56,8 +74,8 @@ get_valid_aux_confs() {
     touch "$aux_confs/one.aux"
     touch "$aux_confs/two.aux"
 
-    echo "$VALID_TEMPLATE" > "$aux_confs/one.template"
-    echo "$VALID_TEMPLATE" > "$aux_confs/two.template"
+    echo "$(get_valid_template)" > "$aux_confs/one.template"
+    echo "$(get_valid_template)" > "$aux_confs/two.template"
 
     echo "$aux_confs/main.one" > "$aux_confs/one.main"
     echo "$aux_confs/main.two" > "$aux_confs/two.main"
@@ -75,12 +93,8 @@ get_incomplete_aux_confs() {
 }
 
 teardown() {
-    rm -rf "$FIXTURES"
+    chmod -R 777 $FIXTURES/*
+    rm -rf $FIXTURES/*
     unset UNREADABLE_DIR
-    unset UNREADABL_FILE
-    unset VALID_PLACEHOLDER
-    unset VALID_TEMPLATE
-    unset REGEX_UNFRIENDLY_INSERT_STRING
-    unset READABLE_FILE
-    unset EMPTY_STRING
+    unset UNREADABLE_FILE
 }

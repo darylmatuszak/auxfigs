@@ -13,13 +13,13 @@ function main() {
 
 
 @test "functional w/ non existent dir" {
-	run main "$EMPTY_STRING"
+	run main "$(get_empty_string)"
 	[ "${status}" -eq 3 ]
 }
 
 
 @test "functional w/ unreadable dir" {
-	run main "$UNREADABLE_DIR"
+	run main "$(get_unreadable_dir)"
 	[ "${status}" -eq 3 ]
 }
 
@@ -27,11 +27,13 @@ function main() {
 @test "functional w/ valid aux_confs" {
 	ac="$(get_valid_aux_confs)"
 	run main "$ac"
-	[ "${status}" -eq 0 ]
+	[ "${status}" -eq 0 ] || echo "# ${status}" >&3
 	[ "$(head -1 "$ac/main.one")" == "existing line" ]
 	[ "$(head -1 "$ac/main.two")" == "existing line" ]
-	[ "$(tail -1 "$ac/main.one")" == "${VALID_TEMPLATE%$VALID_PLACEHOLDER}$ac/one.aux" ]
-	[ "$(tail -1 "$ac/main.two")" = "${VALID_TEMPLATE%$VALID_PLACEHOLDER}$ac/two.aux" ]
+    valid_template="$(get_valid_template)"
+    valid_placeholder="$(get_valid_placeholder)"
+	[ "$(tail -1 "$ac/main.one")" == "${valid_template%$valid_placeholder}$ac/one.aux" ]
+	[ "$(tail -1 "$ac/main.two")" = "${valid_template%$valid_placeholder}$ac/two.aux" ]
 }
 
 @test "functional w/ semi-valid aux_confs" {

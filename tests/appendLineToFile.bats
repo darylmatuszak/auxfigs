@@ -9,26 +9,26 @@ function main() {
 
 @test "appendLineToFile w/ existing file" {
 	file="$(get_writeable_file_w_existing_line)"
-	run main "$REGEX_UNFRIENDLY_INSERT_STRING" "$file" 
+	run main "$(get_regex_unfriendly_insert_string)" "$file" 
 	[ "${status}" -eq 0 ]
-	[ "$(tail -1 "$file")" == "$REGEX_UNFRIENDLY_INSERT_STRING" ]
+	[ "$(tail -1 "$file")" == "$(get_regex_unfriendly_insert_string)" ]
 	[ "$(head -1 "$file")" == "existing line" ]
 }
 
 
 @test "appendLineToFile w/o existing file" {
 	file="$(get_writeable_non_existent_path)"
-	run main "$REGEX_UNFRIENDLY_INSERT_STRING" "$file" 
+	run main "$(get_regex_unfriendly_insert_string)" "$file" 
 	[ "${status}" -eq 0 ]
-	[ "$(tail -1 "$file")" == "$REGEX_UNFRIENDLY_INSERT_STRING" ]
+	[ "$(tail -1 "$file")" == "$(get_regex_unfriendly_insert_string)" ]
 }
 
 
 @test "appendLineToFile w/ existing file w/ existing entry" {
 	file="$(get_writeable_file_w_existing_line)"
-	echo "$REGEX_UNFRIENDLY_INSERT_STRING" >> "$file"
-	run main "$REGEX_UNFRIENDLY_INSERT_STRING" "$file"
+	echo "$(get_regex_unfriendly_insert_string)" >> "$file"
+	run main "$(get_regex_unfriendly_insert_string)" "$file"
 	[ "${status}" -eq 0 ]
-	count="$(grep -c -F "$REGEX_UNFRIENDLY_INSERT_STRING" "$file")"
+	count="$(grep -c -F "$(get_regex_unfriendly_insert_string)" "$file")"
 	[  "$count" -eq 1 ]
 }
