@@ -1,5 +1,5 @@
 function fail() {
-	echo "# ${BATS_TEST_FILENAME##*/} cannot run, prolem with $1" >&3
+	echo "# ERROR IN TEST SETUP: $1" >&3 exit 1
 }
 
 export FIXTURES="${BATS_TMPDIR}/fixtures"
@@ -8,8 +8,7 @@ if ! [ -d "$FIXTURES" ]; then
 fi
 
 if ! [ -w "$FIXTURES" ]; then
-	fail "$FIXTURES"
-	exit 1
+	fail "unable to make a writeable dir ${BATS_TMPDIR}/fixtures"
 fi
 
 dir="/root"
@@ -17,8 +16,7 @@ if ! [ -r "$dir" ] && [ -d "$dir" ]; then
 	export UNREADABLE_DIR="$dir"
 	export UNREADABLE_FILE="$dir"/file
 else
-	fail "$UNREADABLE_DIR" "$UNREADABLE_FILE"
-	exit 1
+	fail "can't use root as an unreadable dir"
 fi
 
 export VALID_PLACEHOLDER="aauuxx__ccoonnff"
