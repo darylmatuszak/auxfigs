@@ -1,5 +1,6 @@
 function fail() {
-    echo "# ERROR IN TEST SETUP: $1" >&3 exit 1
+    echo "# ERROR IN TEST SETUP: $1" >&3
+    exit 1
 }
 
 export FIXTURES="${BATS_TMPDIR}/fixtures"
@@ -9,14 +10,6 @@ fi
 
 if ! [ -w "$FIXTURES" ]; then
     fail "unable to make a writeable dir ${BATS_TMPDIR}/fixtures"
-fi
-
-dir="/root"
-if ! [ -r "$dir" ] && [ -d "$dir" ]; then
-    export UNREADABLE_DIR="$dir"
-    export UNREADABLE_FILE="$dir"/file
-else
-    fail "can't use root as an unreadable dir"
 fi
 
 export VALID_PLACEHOLDER="aauuxx__ccoonnff"
@@ -34,6 +27,16 @@ get_writeable_non_existent_path() {
     echo "$file"
 }
 
+dir="$(get_writeable_non_existent_path)"
+mkdir "$dir"
+chmod 000 "$dir"
+if ! [ -r "$dir" ] && [ -d "$dir" ]; then
+    export UNREADABLE_DIR="$dir"
+    export UNREADABLE_FILE="$dir"/file
+else
+    fail "can't use $dir as an unreadable dir"
+fi
+
 get_blank_writeable_file() {
     file="$(get_writeable_non_existent_path)"
     touch "$file"
@@ -45,7 +48,6 @@ get_writeable_file_w_existing_line() {
     echo "existing line" > "$file"
     echo "$file"
 }
-
 
 get_valid_aux_confs() {
     aux_confs="$(get_writeable_non_existent_path)"
